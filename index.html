@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>売上入力帳</title>
+<link rel="icon" type="image/png" href="edit/icon-192.png">
+<style>
+body{margin:0;background:#F6F8FA;color:#18242F;font-family:"BIZ UDPGothic","BIZ UDPゴシック","Yu Gothic UI","Meiryo",sans-serif;line-height:1.7}
+main{max-width:760px;margin:0 auto;padding:48px 20px}
+h1{font-size:30px;margin:0 0 6px} p.lead{color:#5A6876;margin:0 0 28px}
+.apps{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+@media(max-width:620px){.apps{grid-template-columns:1fr}}
+a.app{display:flex;gap:16px;align-items:center;background:#fff;border:1px solid #D6DDE5;border-radius:12px;padding:18px;text-decoration:none;color:inherit}
+a.app:hover{border-color:#2A6FB0} a.app:focus-visible{outline:3px solid #7FB2E5}
+a.app img{width:64px;height:64px;border-radius:14px} a.app b{display:block;font-size:18px} a.app span{color:#5A6876;font-size:14px}
+h2{font-size:17px;margin:28px 0 8px} ol,ul{padding-left:22px;margin:0} li{margin-bottom:4px}
+.note{background:#fff;border:1px solid #D6DDE5;border-radius:12px;padding:16px 20px}
+</style></head><body><main>
+<h1>売上入力帳</h1>
+<p class="lead">売上の入力と集計のためのアプリです。Microsoft Edge か Google Chrome でお使いください。</p>
+<div class="apps">
+<a class="app" href="edit/"><img src="edit/icon-192.png" alt=""><div><b>入力用</b><span>売上を入力・修正する担当者向け</span></div></a>
+<a class="app" href="view/"><img src="view/icon-192.png" alt=""><div><b>閲覧用</b><span>見るだけの方向け（入力・修正はできません）</span></div></a>
+</div>
+<div class="note">
+<h2 style="margin-top:0">データの保存場所</h2>
+<p style="margin:0">売上データは、お使いのPCや共有フォルダにある「データファイル（.json）」にだけ保存されます。このサイトやインターネット上には送信・保存されません。</p>
+<h2>はじめて使うとき（PCごとに1回）</h2>
+<ol><li>上の「入力用」か「閲覧用」を開く</li><li>右上の「アプリとしてインストール」を押す（アドレスバーのインストールボタンでも可）</li><li>「データファイルを開く」で、共有フォルダのデータファイルを選ぶ</li></ol>
+<h2>2回目から</h2>
+<ul><li>デスクトップやスタートメニューのアイコンから開くだけで、データファイルに自動でつながります</li><li>ブラウザで開いた場合は、確認が出たら「毎回許可する」を選ぶと、次から自動でつながります</li></ul>
+</div>
+</main></body></html>
