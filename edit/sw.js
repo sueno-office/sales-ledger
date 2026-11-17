@@ -1,5 +1,5 @@
-// 売上入力帳 オフライン用（version c648cb8623）
-const CACHE="sales-ledger-edit-c648cb8623";
+// 売上入力帳 オフライン用（version 14b9722a5f）
+const CACHE="sales-ledger-edit-14b9722a5f";
 const FILES=["./","./index.html","./manifest.webmanifest","./icon-192.png","./icon-512.png","./icon-maskable-512.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith("sales-ledger-edit-")&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
