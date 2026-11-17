@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>売上データ CSV変換</title>
+<style>
+body{margin:0;background:#F6F8FA;color:#18242F;font-family:"BIZ UDPGothic","BIZ UDPゴシック","Yu Gothic UI","Meiryo",sans-serif;line-height:1.7}
+main{max-width:720px;margin:0 auto;padding:40px 20px}
+h1{font-size:24px;margin:0 0 4px}
+p{margin:0 0 12px}
+.hint{color:#5A6876;font-size:14px}
+.box{background:#fff;border:1px solid #D6DDE5;border-radius:12px;padding:20px;margin-top:20px}
+label.pick{display:inline-block;background:#2A6FB0;color:#fff;border-radius:8px;padding:10px 18px;font-weight:700;cursor:pointer}
+label.pick:focus-within{outline:3px solid #7FB2E5}
+button{font:inherit;border:1px solid #D6DDE5;background:#fff;border-radius:8px;padding:9px 16px;cursor:pointer;font-weight:700;margin:6px 8px 0 0}
+button:hover{border-color:#2A6FB0}
+table{border-collapse:collapse;margin-top:8px;font-size:14px}
+td{padding:3px 14px 3px 0}
+td.r{text-align:right;font-variant-numeric:tabular-nums}
+.err{color:#B3261E;font-weight:700}
+</style>
+</head>
+<body>
+<main>
+<h1>売上データ CSV変換</h1>
+<p class="hint">売上入力帳のデータファイル（.json）を、Excelで開けるCSVファイルに変換します。インターネットにつながっていなくても、どのブラウザでも使えます。データはこのPCの中だけで処理され、どこにも送信されません。</p>
+
+<div class="box">
+  <label class="pick">データファイルを選ぶ<input type="file" id="file" accept=".json,application/json" hidden></label>
+  <div id="out"></div>
+</div>
+</main>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const q=v=>{const s=v==null?"":String(v);return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+const dt=d=>{if(!d)return"";const k=/^(\d{4})-(\d\d)-(\d\d)$/.exec(d);return k?(+k[1])+"/"+(+k[2])+"/"+(+k[3]):d};
+let base="売上データ";
+function dl(name,rows){
+  const t="﻿"+rows.map(r=>r.map(q).join(",")).join("\r\n")+"\r\n";
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/csv"}));a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+}
+$("file").addEventListener("change",async e=>{
+  const f=e.target.files[0];if(!f)return;e.target.value="";
+  let o;try{o=JSON.parse(await f.text())}catch(x){}
+  if(!o||!Array.isArray(o.entries)){$("out").innerHTML='<p class="err" style="margin-top:14px">このファイルは売上入力帳のデータファイルとして読めませんでした。</p>';return}
+  base=f.name.replace(/\.json$/i,"");
+  const ent=o.entries.slice().sort((a,b)=>a.y-b.y||a.m-b.m||a.id-b.id);
+  const past=(o.past||[]).slice().sort((a,b)=>a.y-b.y||a.m-b.m);
+  const sum=ent.reduce((s,e)=>s+(e.a||0),0);
+  const ys=ent.length?ent[0].y+"年"+ent[0].m+"月 〜 "+ent[ent.length-1].y+"年"+ent[ent.length-1].m+"月":"なし";
+  $("out").innerHTML=`<table><tr><td>ファイル</td><td>${esc(f.name)}</td></tr><tr><td>明細</td><td class="r">${ent.length.toLocaleString()}件</td></tr><tr><td>期間</td><td>${ys}</td></tr><tr><td>明細の合計</td><td class="r">${sum.toLocaleString()}円</td></tr><tr><td>過去の月別合計</td><td class="r">${past.length}か月分</td></tr><tr><td>取引先</td><td class="r">${(o.customers||[]).length}社</td></tr></table>
+  <button id="b1">明細をCSVで保存</button>${past.length?'<button id="b2">過去の月別合計をCSVで保存</button>':""}<button id="b3">取引先一覧をCSVで保存</button>
+  <p class="hint" style="margin-top:10px">保存したCSVは、ダブルクリックするとExcelで開けます。</p>`;
+  $("b1").onclick=()=>dl(base+"_明細.csv",[["年","月","日付","取引先","金額（税抜）","備考"]].concat(ent.map(e=>[e.y,e.m,dt(e.d),e.c||"",e.a==null?"":e.a,e.n||""])));
+  if($("b2"))$("b2").onclick=()=>dl(base+"_過去の月別合計.csv",[["年","月","売上合計（税抜）"]].concat(past.map(p=>[p.y,p.m,p.t])));
+  $("b3").onclick=()=>dl(base+"_取引先一覧.csv",[["取引先","入力画面に出さない"]].concat((o.customers||[]).map(c=>[c.name,c.hidden?"はい":""])));
+});
+</script>
+</body>
+</html>
