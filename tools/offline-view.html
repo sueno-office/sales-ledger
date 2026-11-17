@@ -454,7 +454,7 @@ function dateNote(){
   if(Math.abs(x)===1){el.className="dnote";el.textContent=`${c.m}月の売上として登録します（日付は${ds}＝${x<0?"前月":"翌月"}）。`}
   else{el.className="dnote ng";el.textContent=`日付（${k[0]}/${k[1]}/${k[2]}）が計上月（${c.y}年${c.m}月）から離れています。年や月の打ち間違いではありませんか？このまま登録すると「要確認」になります。`}
 }
-function dateText(e){if(!e.d)return"";const k=/^(\d{4})-(\d\d)-(\d\d)$/.exec(e.d);if(!k)return e.d;const t=(+k[2])+"/"+(+k[3]);return (+k[1]!==e.y&&!((+k[1]===e.y-1&&e.m===1)||(+k[1]===e.y+1&&e.m===12)))?k[1]+"/"+t:t}
+function dateText(e){if(!e.d)return"";const k=/^(\d{4})-(\d\d)-(\d\d)$/.exec(e.d);if(!k)return e.d;const t=(+k[2])+"/"+(+k[3]);const x=(+k[1]-e.y)*12+(+k[2])-e.m;return (+k[1]!==e.y&&Math.abs(x)>1)?k[1]+"/"+t:t}
 function parseDate(txt,y,m){
   let s=String(txt||"").trim().replace(/[０-９／．－]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0));
   if(!s)return null;let Y,M,Dd,k;
